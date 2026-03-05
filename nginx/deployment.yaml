@@ -32,4 +32,6 @@ spec:
 
         volumeMounts:
         - name: html
-          mountPath: /usr/share/nginx/html
+          mountPath: /usr/share/nginx/html/index.html
+          subPath: index.html
+          
