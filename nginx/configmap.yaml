@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: nginx-html
 data:
-  index.html: 
+  index.html: |
     <!DOCTYPE html>
 <html lang="es">
 <head>
