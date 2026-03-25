@@ -4,34 +4,33 @@ metadata:
   name: nginx-gitops
   labels:
     app: nginx-gitops
-
 spec:
-  replicas: 3
-
+  replicas: 1
   selector:
     matchLabels:
       app: nginx-gitops
-
   template:
     metadata:
       labels:
         app: nginx-gitops
-
     spec:
       volumes:
       - name: html
         configMap:
           name: nginx-html
-
       containers:
       - name: nginx
         image: nginx:latest
-
         ports:
         - containerPort: 80
-
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "200m"
+            memory: "256Mi"
         volumeMounts:
         - name: html
           mountPath: /usr/share/nginx/html/index.html
           subPath: index.html
-          
