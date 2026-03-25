@@ -5,8 +5,11 @@ metadata:
   annotations:
     cloud.google.com/neg: '{"ingress": true}'
 spec:
+  type: ClusterIP
   selector:
     app: nginx-gitops
   ports:
-    - port: 80
+    - name: http
+      port: 80
       targetPort: 80
+      protocol: TCP
