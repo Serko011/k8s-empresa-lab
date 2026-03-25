@@ -3,9 +3,8 @@ kind: Ingress
 metadata:
   name: nginx-gitops
 spec:
-  ingressClassName: nginx
+  ingressClassName: gce
   rules:
-  - host: gitops.empresa.local
     http:
       paths:
       - path: /
