@@ -32,5 +32,4 @@ spec:
             memory: "256Mi"
         volumeMounts:
         - name: html
-          mountPath: /usr/share/nginx/html/index.html
-          subPath: index.html
+          mountPath: /usr/share/nginx/html
