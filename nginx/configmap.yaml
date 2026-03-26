@@ -364,7 +364,7 @@ data:
               GitOps Lab <span class="pill">Kubernetes · ArgoCD · Helm</span>
             </div>
           </div>
-  <h1>hola pardal</h1>
+          <h1>hola pardal</h1>
           <nav>
             <a class="navlink" href="#intro">Intro</a>
             <a class="navlink" href="#arquitectura">Arquitectura</a>
