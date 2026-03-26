@@ -1,0 +1,689 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-html
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width,initial-scale=1" />
+      <title>GitOps Kubernetes Lab | Documentación</title>
+      <meta name="description" content="Laboratorio GitOps con Kubernetes, Calico, Ingress NGINX, Bind9, Helm y ArgoCD." />
+
+      <style>
+        :root{
+          --bg: #0b1220;
+          --panel: rgba(255,255,255,0.06);
+          --panel2: rgba(255,255,255,0.08);
+          --text: rgba(255,255,255,0.88);
+          --muted: rgba(255,255,255,0.62);
+          --brand: #38bdf8;
+          --brand2: #22c55e;
+          --warn: #f59e0b;
+          --danger: #ef4444;
+          --border: rgba(255,255,255,0.14);
+          --shadow: 0 16px 60px rgba(0,0,0,0.55);
+          --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+          --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+          --radius: 18px;
+          --radius2: 14px;
+          --maxw: 1100px;
+        }
+
+        *{ box-sizing:border-box; }
+        html,body{ height:100%; }
+        body{
+          margin:0;
+          font-family: var(--sans);
+          color: var(--text);
+          background:
+            radial-gradient(900px 500px at 20% 10%, rgba(56,189,248,0.18), transparent 60%),
+            radial-gradient(900px 500px at 80% 0%, rgba(34,197,94,0.14), transparent 55%),
+            radial-gradient(800px 500px at 50% 100%, rgba(245,158,11,0.10), transparent 60%),
+            linear-gradient(180deg, #070b12 0%, var(--bg) 30%, #060a11 100%);
+          overflow-x:hidden;
+        }
+
+        a{ color:inherit; text-decoration:none; }
+        .container{ max-width: var(--maxw); margin:0 auto; padding: 22px; }
+
+        /* Top bar */
+        .topbar{
+          position: sticky;
+          top:0;
+          z-index:50;
+          backdrop-filter: blur(10px);
+          background: rgba(7,11,18,0.55);
+          border-bottom: 1px solid var(--border);
+        }
+        .topbar .wrap{
+          display:flex;
+          align-items:center;
+          justify-content:space-between;
+          gap: 16px;
+          padding: 14px 22px;
+          max-width: var(--maxw);
+          margin:0 auto;
+        }
+        .brand{
+          display:flex;
+          align-items:center;
+          gap: 12px;
+          font-weight: 800;
+          letter-spacing: 0.2px;
+        }
+        .logo{
+          width: 34px;
+          height: 34px;
+          border-radius: 10px;
+          background:
+            radial-gradient(14px 14px at 30% 30%, rgba(255,255,255,0.25), transparent 60%),
+            linear-gradient(135deg, rgba(56,189,248,0.95), rgba(34,197,94,0.90));
+          box-shadow: 0 10px 30px rgba(56,189,248,0.18);
+          border: 1px solid rgba(255,255,255,0.18);
+        }
+
+        nav{
+          display:flex;
+          align-items:center;
+          gap: 10px;
+          flex-wrap: wrap;
+          justify-content:flex-end;
+        }
+        .navlink{
+          font-size: 13px;
+          color: var(--muted);
+          padding: 8px 10px;
+          border-radius: 999px;
+          border: 1px solid transparent;
+          transition: 150ms ease;
+          user-select:none;
+        }
+        .navlink:hover{
+          color: var(--text);
+          border-color: rgba(255,255,255,0.16);
+          background: rgba(255,255,255,0.04);
+        }
+        .pill{
+          font-size: 12px;
+          padding: 6px 10px;
+          border-radius: 999px;
+          background: rgba(56,189,248,0.12);
+          border: 1px solid rgba(56,189,248,0.22);
+          color: rgba(255,255,255,0.82);
+        }
+
+        /* Hero */
+        .hero{
+          padding: 34px 0 14px;
+        }
+        .heroGrid{
+          display:grid;
+          grid-template-columns: 1.2fr 0.8fr;
+          gap: 18px;
+          align-items: stretch;
+        }
+        .card{
+          background: var(--panel);
+          border: 1px solid var(--border);
+          border-radius: var(--radius);
+          box-shadow: var(--shadow);
+        }
+        .heroCard{
+          padding: 26px 26px 18px;
+          position: relative;
+          overflow:hidden;
+        }
+        .heroCard::before{
+          content:"";
+          position:absolute; inset:-2px;
+          background:
+            radial-gradient(400px 180px at 10% 10%, rgba(56,189,248,0.16), transparent 60%),
+            radial-gradient(400px 180px at 70% 0%, rgba(34,197,94,0.14), transparent 60%);
+          pointer-events:none;
+        }
+        .heroTitle{
+          position:relative;
+          margin:0;
+          font-size: clamp(28px, 3.2vw, 44px);
+          letter-spacing: -0.6px;
+          line-height: 1.06;
+        }
+        .heroTitle span{
+          color: var(--brand);
+        }
+        .subtitle{
+          position:relative;
+          margin: 12px 0 0;
+          color: var(--muted);
+          font-size: 15px;
+          line-height: 1.55;
+          max-width: 70ch;
+        }
+        .chips{
+          margin-top: 16px;
+          display:flex;
+          flex-wrap:wrap;
+          gap: 8px;
+          position:relative;
+        }
+        .chip{
+          font-size: 12px;
+          padding: 7px 10px;
+          border-radius: 999px;
+          border: 1px solid rgba(255,255,255,0.14);
+          background: rgba(255,255,255,0.05);
+          color: rgba(255,255,255,0.80);
+        }
+        .chip.green{
+          border-color: rgba(34,197,94,0.25);
+          background: rgba(34,197,94,0.10);
+        }
+        .chip.blue{
+          border-color: rgba(56,189,248,0.24);
+          background: rgba(56,189,248,0.10);
+        }
+
+        .heroSide{
+          padding: 18px;
+          display:flex;
+          flex-direction:column;
+          gap: 12px;
+        }
+        .stat{
+          background: var(--panel2);
+          border: 1px solid rgba(255,255,255,0.14);
+          border-radius: var(--radius2);
+          padding: 14px;
+        }
+        .stat .k{ font-size: 12px; color: var(--muted); }
+        .stat .v{ margin-top: 6px; font-size: 15px; font-weight: 700; }
+        .tiny{ font-size: 12px; color: var(--muted); line-height: 1.4; margin-top: 6px; }
+
+        /* Sections */
+        section{ margin: 18px 0; }
+        .sectionCard{
+          padding: 18px;
+        }
+        .sectionTitle{
+          margin:0 0 10px;
+          font-size: 18px;
+          letter-spacing: -0.2px;
+        }
+        .grid2{
+          display:grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 14px;
+        }
+        .grid3{
+          display:grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 12px;
+        }
+
+        /* Timeline */
+        .timeline{
+          margin-top: 10px;
+          display:grid;
+          gap: 10px;
+        }
+        .step{
+          display:flex;
+          gap: 12px;
+          padding: 12px;
+          border-radius: 14px;
+          border: 1px solid rgba(255,255,255,0.12);
+          background: rgba(255,255,255,0.04);
+        }
+        .badge{
+          flex: 0 0 auto;
+          width: 28px;
+          height: 28px;
+          border-radius: 10px;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          font-weight: 800;
+          font-size: 12px;
+          background: rgba(56,189,248,0.14);
+          border: 1px solid rgba(56,189,248,0.26);
+          color: rgba(255,255,255,0.86);
+          margin-top: 2px;
+        }
+        .step h4{
+          margin:0;
+          font-size: 14px;
+        }
+        .step p{
+          margin: 6px 0 0;
+          color: var(--muted);
+          font-size: 13px;
+          line-height: 1.45;
+        }
+
+        /* Code blocks */
+        .code{
+          position: relative;
+          background: rgba(3,6,10,0.62);
+          border: 1px solid rgba(255,255,255,0.14);
+          border-radius: 14px;
+          padding: 12px 12px 12px;
+          overflow:auto;
+          box-shadow: 0 12px 34px rgba(0,0,0,0.35);
+        }
+        pre{
+          margin:0;
+          font-family: var(--mono);
+          font-size: 12.5px;
+          line-height: 1.55;
+          color: rgba(255,255,255,0.88);
+          white-space: pre;
+          tab-size: 2;
+        }
+        .copy{
+          position:absolute;
+          top: 10px;
+          right: 10px;
+          border: 1px solid rgba(255,255,255,0.14);
+          background: rgba(255,255,255,0.06);
+          color: rgba(255,255,255,0.86);
+          padding: 7px 10px;
+          border-radius: 10px;
+          font-size: 12px;
+          cursor:pointer;
+          transition: 150ms ease;
+        }
+        .copy:hover{
+          background: rgba(255,255,255,0.10);
+          transform: translateY(-1px);
+        }
+        .note{
+          margin-top: 8px;
+          font-size: 12px;
+          color: var(--muted);
+          line-height: 1.45;
+        }
+
+        /* Callouts */
+        .callouts{
+          display:grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 12px;
+          margin-top: 10px;
+        }
+        .callout{
+          padding: 14px;
+          border-radius: 14px;
+          border: 1px solid rgba(255,255,255,0.12);
+          background: rgba(255,255,255,0.04);
+        }
+        .callout strong{ display:block; margin-bottom: 6px; }
+        .callout .tag{
+          display:inline-block;
+          font-size: 11px;
+          padding: 4px 8px;
+          border-radius: 999px;
+          border: 1px solid rgba(255,255,255,0.14);
+          background: rgba(255,255,255,0.04);
+          color: rgba(255,255,255,0.78);
+          margin-left: 8px;
+          transform: translateY(-1px);
+        }
+        .tag.warn{ border-color: rgba(245,158,11,0.28); background: rgba(245,158,11,0.10); }
+        .tag.ok{ border-color: rgba(34,197,94,0.28); background: rgba(34,197,94,0.10); }
+        .tag.info{ border-color: rgba(56,189,248,0.28); background: rgba(56,189,248,0.10); }
+
+        /* Footer */
+        footer{
+          margin: 28px 0 18px;
+          color: var(--muted);
+          font-size: 12px;
+          text-align:center;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px){
+          .heroGrid{ grid-template-columns: 1fr; }
+          .grid2{ grid-template-columns: 1fr; }
+          .grid3{ grid-template-columns: 1fr; }
+          nav{ justify-content:flex-start; }
+        }
+      </style>
+    </head>
+
+    <body>
+
+      <div class="topbar">
+        <div class="wrap">
+          <div class="brand">
+            <div class="logo"></div>
+            <div>
+              GitOps Lab <span class="pill">Kubernetes · ArgoCD · Helm</span>
+            </div>
+          </div>
+          <nav>
+            <a class="navlink" href="#intro">Intro</a>
+            <a class="navlink" href="#arquitectura">Arquitectura</a>
+            <a class="navlink" href="#pasos">Pasos & Comandos</a>
+            <a class="navlink" href="#incidencias">Incidencias</a>
+            <a class="navlink" href="#estado">Estado</a>
+            <a class="navlink" href="#roadmap">Roadmap</a>
+          </nav>
+        </div>
+      </div>
+
+      <div class="container">
+
+        <section class="hero" id="intro">
+          <div class="heroGrid">
+            <div class="card heroCard">
+              <h1 class="heroTitle">GitOps <span>Kubernetes</span> Lab</h1>
+              <p class="subtitle">
+                Documentación de un laboratorio práctico de DevOps donde desplegamos un clúster Kubernetes (master/worker),
+                red de pods con Calico, Ingress NGINX, DNS interno con Bind9, despliegues con Helm y flujo GitOps con ArgoCD.
+                <br><br>
+                Objetivo: que cualquier persona pueda reproducir el laboratorio siguiendo pasos claros y comandos listos para copiar.
+              </p>
+
+              <div class="chips">
+                <span class="chip blue">Cluster: master (192.168.88.132) + worker (192.168.88.133)</span>
+                <span class="chip green">GitOps: ArgoCD + GitHub</span>
+                <span class="chip">DNS: Bind9 (empresa.local)</span>
+                <span class="chip">Ingress: ingress-nginx</span>
+              </div>
+            </div>
+
+            <div class="card heroSide">
+              <div class="stat">
+                <div class="k">Estado</div>
+                <div class="v">✅ En ejecución (demo operativa)</div>
+                <div class="tiny">Esta página está servida desde Kubernetes mediante ConfigMap + NGINX.</div>
+              </div>
+              <div class="stat">
+                <div class="k">Accesos</div>
+                <div class="v">gitops.empresa.local</div>
+                <div class="tiny">Resolución DNS interna → Ingress NGINX → Service → Pods.</div>
+              </div>
+              <div class="stat">
+                <div class="k">Modo</div>
+                <div class="v">GitOps (Auto-Sync)</div>
+                <div class="tiny">Los cambios en GitHub se aplican automáticamente por ArgoCD.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="arquitectura">
+          <div class="card sectionCard">
+            <h2 class="sectionTitle">Arquitectura</h2>
+
+            <div class="grid2">
+              <div class="callout">
+                <strong>Flujo de tráfico <span class="tag info">HTTP</span></strong>
+                Cliente → DNS (Bind9) → IP del nodo → NodePort Ingress → Ingress Controller → Service → Pod NGINX
+              </div>
+
+              <div class="callout">
+                <strong>Flujo GitOps <span class="tag ok">Auto</span></strong>
+                Commit en GitHub → ArgoCD detecta cambios → Render/Apply manifiestos → Reconciliación y Health
+              </div>
+            </div>
+
+            <div class="note">
+              Nota: En un entorno real, lo habitual es exponer el Ingress con LoadBalancer o MetalLB. En el lab lo hacemos con NodePort.
+            </div>
+          </div>
+        </section>
+
+        <section id="pasos">
+          <div class="card sectionCard">
+            <h2 class="sectionTitle">Pasos & Comandos reproducibles</h2>
+
+            <div class="timeline">
+
+              <div class="step">
+                <div class="badge">1</div>
+                <div>
+                  <h4>Validación del clúster</h4>
+                  <p>Comprobación de nodos y componentes base.</p>
+                  <div class="code" data-code>
+                    <button class="copy" data-copy>Copiar</button>
+                    <pre>export KUBECONFIG=/etc/kubernetes/admin.conf
+    kubectl get nodes -o wide
+    kubectl get pods -n kube-system -o wide</pre>
+                  </div>
+                </div>
+              </div>
+
+              <div class="step">
+                <div class="badge">2</div>
+                <div>
+                  <h4>Despliegue básico (NGINX) para test de red</h4>
+                  <p>Deployment + Service, para validar scheduling, pull de imágenes y networking.</p>
+                  <div class="code" data-code>
+                    <button class="copy" data-copy>Copiar</button>
+                    <pre>kubectl create deployment nginx --image=nginx
+    kubectl expose deployment nginx --port=80 --type=NodePort
+    kubectl get svc -o wide</pre>
+                  </div>
+                  <div class="note">Acceso: http://&lt;IP-NODO&gt;:&lt;NodePort&gt;</div>
+                </div>
+              </div>
+
+              <div class="step">
+                <div class="badge">3</div>
+                <div>
+                  <h4>Helm + chart de ejemplo (mi-web)</h4>
+                  <p>Creación/instalación de chart y exposición por NodePort para validar empaquetado.</p>
+                  <div class="code" data-code>
+                    <button class="copy" data-copy>Copiar</button>
+                    <pre>helm version
+    helm install mi-web ./mi-web
+    kubectl get pods
+    kubectl get svc</pre>
+                  </div>
+                </div>
+              </div>
+
+              <div class="step">
+                <div class="badge">4</div>
+                <div>
+                  <h4>Instalar Ingress NGINX</h4>
+                  <p>Para enrutar por Host (dominio) y evitar depender de NodePort por app.</p>
+                  <div class="code" data-code>
+                    <button class="copy" data-copy>Copiar</button>
+                    <pre># Ejemplo con Helm (si ya lo tienes instalado, ignora)
+    helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+    helm repo update
+    helm install ingress ingress-nginx/ingress-nginx</pre>
+                  </div>
+                </div>
+              </div>
+
+              <div class="step">
+                <div class="badge">5</div>
+                <div>
+                  <h4>DNS interno con Bind9 (empresa.local)</h4>
+                  <p>Resolvemos miweb.empresa.local / argocd.empresa.local / gitops.empresa.local hacia el nodo.</p>
+                  <div class="code" data-code>
+                    <button class="copy" data-copy>Copiar</button>
+                    <pre># Zona ejemplo
+    cat /etc/bind/db.empresa.local
+
+    # Probar resolución desde un cliente
+    dig gitops.empresa.local
+    nslookup gitops.empresa.local</pre>
+                  </div>
+                  <div class="note">
+                    Importante: “.local” suele asociarse a mDNS. En labs funciona, pero para ser más “enterprise” usa por ejemplo: empresa.lan o empresa.internal.
+                  </div>
+                </div>
+              </div>
+
+              <div class="step">
+                <div class="badge">6</div>
+                <div>
+                  <h4>ArgoCD (GitOps)</h4>
+                  <p>Instalación en namespace propio y despliegue de una app desde GitHub.</p>
+                  <div class="code" data-code>
+                    <button class="copy" data-copy>Copiar</button>
+                    <pre>kubectl create namespace argocd
+    kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+    kubectl get pods -n argocd</pre>
+                  </div>
+                </div>
+              </div>
+
+              <div class="step">
+                <div class="badge">7</div>
+                <div>
+                  <h4>NGINX GitOps: ConfigMap + Deployment + Ingress</h4>
+                  <p>Servimos esta web desde ConfigMap y aplicamos cambios solo con commits.</p>
+                  <div class="code" data-code>
+                    <button class="copy" data-copy>Copiar</button>
+                    <pre># Idea clave: montar solo el index.html con subPath
+    # mountPath: /usr/share/nginx/html/index.html
+    # subPath: index.html</pre>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        <section id="incidencias">
+          <div class="card sectionCard">
+            <h2 class="sectionTitle">Incidencias reales y cómo las resolvimos</h2>
+
+            <div class="callouts">
+              <div class="callout">
+                <strong>Pods en ContainerCreating <span class="tag warn">CNI</span></strong>
+                Error: <span style="font-family:var(--mono);">failed to find plugin "calico" in path [/usr/lib/cni]</span>
+                <div class="note">
+                  Causa: en algunos setups, kubelet/containerd esperan plugins en <b>/usr/lib/cni</b> pero estaban en <b>/opt/cni/bin</b>.
+                  Fix: crear ruta/symlink o configurar CNI path correctamente.
+                </div>
+              </div>
+
+              <div class="callout">
+                <strong>ArgoCD no podía acceder a GitHub <span class="tag warn">DNS</span></strong>
+                Error: <span style="font-family:var(--mono);">Could not resolve host: github.com</span>
+                <div class="note">
+                  Causa típica: DNS/egress en el namespace/pods o resolv.conf del nodo.
+                  Fix: validar resolución desde el pod (repo-server) y la config DNS del nodo.
+                </div>
+              </div>
+
+              <div class="callout">
+                <strong>HTTPS/redirect loop en ArgoCD <span class="tag warn">HTTP/HTTPS</span></strong>
+                <div class="note">
+                  Causa: abrir puerto equivocado (80 vs 443) o exponer servicio sin ajustar el modo.
+                  Fix: usar el NodePort correcto del puerto 443 o configurar Ingress/TLS si se desea.
+                </div>
+              </div>
+
+              <div class="callout">
+                <strong>ConfigMap no cambiaba la web <span class="tag ok">Solucionado</span></strong>
+                <div class="note">
+                  Causa: montar el directorio completo en lugar del archivo <b>index.html</b>.
+                  Fix: <b>subPath</b> para montar únicamente el archivo y reinicio/rollout controlado.
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="estado">
+          <div class="card sectionCard">
+            <h2 class="sectionTitle">Estado actual</h2>
+
+            <div class="grid3">
+              <div class="stat">
+                <div class="k">Cluster</div>
+                <div class="v">✅ Nodes Ready</div>
+                <div class="tiny">master + worker con Calico, CoreDNS, kube-proxy.</div>
+              </div>
+              <div class="stat">
+                <div class="k">Ingress</div>
+                <div class="v">✅ Operativo</div>
+                <div class="tiny">Host-based routing: miweb.empresa.local / gitops.empresa.local</div>
+              </div>
+              <div class="stat">
+                <div class="k">ArgoCD</div>
+                <div class="v">✅ Synchronized</div>
+                <div class="tiny">Auto-sync habilitado, reconciliación y health checks.</div>
+              </div>
+            </div>
+
+            <div class="note">
+              Consejo de demo: muestra ArgoCD, haz un commit cambiando un texto aquí, y enseña cómo se actualiza solo.
+            </div>
+          </div>
+        </section>
+
+        <section id="roadmap">
+          <div class="card sectionCard">
+            <h2 class="sectionTitle">Roadmap (próximos pasos)</h2>
+            <div class="timeline">
+              <div class="step">
+                <div class="badge">A</div>
+                <div>
+                  <h4>HTTPS real (TLS) para Ingress</h4>
+                  <p>Certificado interno (self-signed o CA propia) + Secret TLS + Ingress con <span style="font-family:var(--mono)">tls:</span></p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="badge">B</div>
+                <div>
+                  <h4>Observabilidad</h4>
+                  <p>Prometheus + Grafana (Helm) y dashboard del clúster.</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="badge">C</div>
+                <div>
+                  <h4>CI/CD completo</h4>
+                  <p>Pipeline en GitHub Actions: lint YAML, validar manifests, update chart version, etc.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <footer>
+          GitOps Kubernetes Lab · Documentación viva (cambios vía GitHub → ArgoCD) · <span id="build"></span>
+        </footer>
+
+      </div>
+
+      <script>
+        // Copy buttons for code blocks
+        document.querySelectorAll("[data-code]").forEach(block => {
+          const btn = block.querySelector("[data-copy]");
+          const pre = block.querySelector("pre");
+          if (!btn || !pre) return;
+
+          btn.addEventListener("click", async () => {
+            try{
+              await navigator.clipboard.writeText(pre.innerText);
+              const prev = btn.innerText;
+              btn.innerText = "Copiado ✓";
+              setTimeout(()=> btn.innerText = prev, 900);
+            }catch(e){
+              btn.innerText = "No se pudo copiar";
+              setTimeout(()=> btn.innerText = "Copiar", 900);
+            }
+          });
+        });
+
+        // Small build stamp
+        const now = new Date();
+        document.getElementById("build").textContent =
+          "Build: " + now.toLocaleDateString("es-ES") + " " + now.toLocaleTimeString("es-ES");
+      </script>
+
+    </body>
+    </html>
